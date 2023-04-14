@@ -1,6 +1,8 @@
 package com.itkissi.studentManagement.controller;
 
+import com.itkissi.studentManagement.exception.StudentNotFoundException;
 import com.itkissi.studentManagement.model.Student;
+import com.itkissi.studentManagement.repository.StudentRepository;
 import com.itkissi.studentManagement.service.StudentService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
+    @Autowired
+    private StudentRepository studentRepository;
 
     @PostMapping("/add")
     public String add( @RequestBody Student student){
@@ -25,28 +29,39 @@ public class StudentController {
         return "Student added successfully";
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/students")
     public List<Student> getAll()
     {
         return studentService.getStudents();
     }
-    @PutMapping("/update")
-    public String update(@RequestBody Student student)
-    {
-        Student studentUpdated = studentService.findStudentById(student.getId()).orElseThrow(EntityNotFoundException::new);
 
-        studentUpdated.setName(student.getName());
-        studentUpdated.setUsername(student.getUsername());
-        studentUpdated.setEmail(student.getEmail());
-        studentService.saveStudent(studentUpdated);
-        return "Student updated successfully";
+    @GetMapping("/student/{id}")
+    public Student getStudentById(@PathVariable("id") Integer id)
+    {
+        return  studentService.findStudentById(id)
+                .orElseThrow(()-> new StudentNotFoundException(id));
+    }
+    @PutMapping("/update/{id}")
+    public Student update(@RequestBody Student studentUpdated,@PathVariable("id") Integer id)
+    {
+        return studentService.findStudentById(id)
+                        .map( student -> {
+                            student.setName(studentUpdated.getName());
+                            student.setUsername(studentUpdated.getUsername());
+                            student.setEmail(studentUpdated.getEmail());
+                            return studentService.saveStudent(student);
+                        }).orElseThrow(()-> new StudentNotFoundException(id));
     }
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable("id") int id)
     {
-        studentService.findStudentById(id).orElseThrow(EntityNotFoundException::new);
+        if(studentService.findStudentById(id)==null)
+        {
+            throw new StudentNotFoundException(id);
+        }
         studentService.deleteStudent(id);
-        return "Student deleted successfully";
+
+        return "Student with id "+ id +" deleted successfully";
     }
 
 }

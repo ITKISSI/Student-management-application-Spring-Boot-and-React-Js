@@ -1,6 +1,7 @@
 package com.itkissi.studentManagement.service;
 
 import com.itkissi.studentManagement.model.Student;
+import com.itkissi.studentManagement.repository.StudentRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
