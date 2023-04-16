@@ -35,14 +35,14 @@ public class StudentController {
         return studentService.getStudents();
     }
 
-    @GetMapping("/student/{id}")
-    public Student getStudentById(@PathVariable("id") Integer id)
+    @GetMapping("/getStudent/{id}")
+    public Student getStudentById(@PathVariable("id") int id)
     {
         return  studentService.findStudentById(id)
                 .orElseThrow(()-> new StudentNotFoundException(id));
     }
-    @PutMapping("/update/{id}")
-    public Student update(@RequestBody Student studentUpdated,@PathVariable("id") Integer id)
+    @PutMapping("/edit/{id}")
+    public Student update(@RequestBody Student studentUpdated,@PathVariable("id") int id)
     {
         return studentService.findStudentById(id)
                         .map( student -> {

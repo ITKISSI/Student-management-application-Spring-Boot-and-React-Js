@@ -38,7 +38,7 @@ export default function Home() {
                 <td>{student.email}</td>
                 <td>
                     <Link className='btn btn-outline-primary mx-2' to="/view">View</Link> 
-                    <Link className='btn btn-outline-success mx-2' to="/edit">Edit</Link>
+                    <Link className='btn btn-outline-success mx-2' to={`/edit/${student.id}`}>Edit</Link>
                     <Link className='btn btn-outline-danger mx-2'>Delete</Link> 
                 </td>
             </tr>
