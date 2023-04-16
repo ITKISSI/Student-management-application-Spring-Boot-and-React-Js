@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 export default function Home() {
+
+    const {id}=useParams();
 
     const [students,setStudent]=useState([])
     useEffect(()=>{
@@ -14,6 +16,12 @@ export default function Home() {
         const result = await axios.get("http://localhost:8080/student/students");
         setStudent(result.data);
     };
+
+    const deleteStudent = async (id)=>
+    {
+      await axios.delete(`http://localhost:8080/student/delete/${id}`);
+      loadStudents();
+    }
 
   return (
     <div className='container'>
@@ -39,7 +47,7 @@ export default function Home() {
                 <td>
                     <Link className='btn btn-outline-primary mx-2' to="/view">View</Link> 
                     <Link className='btn btn-outline-success mx-2' to={`/edit/${student.id}`}>Edit</Link>
-                    <Link className='btn btn-outline-danger mx-2'>Delete</Link> 
+                    <Link className='btn btn-outline-danger mx-2' onClick={()=>deleteStudent(student.id)}>Delete</Link> 
                 </td>
             </tr>
 
